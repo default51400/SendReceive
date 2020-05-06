@@ -27,17 +27,49 @@ namespace Receive
                                  autoDelete: false,
                                  arguments: null);
 
+                    channel.BasicQos(0, 1, false);
+
                     var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body.Span);
-                        Console.WriteLine($"[x] received {message}");
-                    };
 
                     channel.BasicConsume(queue: "CashService",
-                                         autoAck: true,
+                                         autoAck: false, 
                                          consumer: consumer);
+                    Console.WriteLine(" [x] Awaiting RPC requests");
+
+                    consumer.Received += (model, ea) =>
+                    {
+                        string response = null;
+
+                        var body = ea.Body;
+                        var props = ea.BasicProperties;
+                        var replyProps = channel.CreateBasicProperties();
+                        replyProps.CorrelationId = props.CorrelationId;
+
+
+                        try
+                        {
+                            var message = Encoding.UTF8.GetString(body.Span);
+                            Console.WriteLine($"Taked message:\n {message}");
+                            response = "{All is OK}";
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(" [.] " + e.Message);
+                            response = "";
+                        }
+                        finally
+                        {
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
+                            channel.BasicPublish(exchange: "", routingKey: props.ReplyTo,
+                              basicProperties: replyProps, body: responseBytes);
+                            channel.BasicAck(deliveryTag: ea.DeliveryTag,
+                              multiple: false);
+                        }
+                    };
+
+                    //channel.BasicConsume(queue: "CashService",
+                    //                     autoAck: true,
+                    //                     consumer: consumer);
 
                     Console.WriteLine("Pr key to exit");
                     Console.ReadLine();
