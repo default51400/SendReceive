@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0S5Or7LMKc01vq5FxIBLYpz5ERYSidLeNEI2HGRI2tLhz7GvWVlUdoj//iU73R93nwjo8BJxckvyeQx/ho77Eg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\opetrov2\\source\\repos\\SendReceive\\Receive\\Receive.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\opetrov2\\.nuget\\packages\\rabbitmq.client\\6.0.0\\rabbitmq.client.6.0.0.nupkg.sha512",
+    "C:\\Users\\opetrov2\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512"
+  ],
+  "logs": []
+}
